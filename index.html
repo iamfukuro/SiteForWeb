@@ -13,90 +13,86 @@
 
 
 <header>
+    <h1 class = "header_text">Food Constructor</h1>
     <nav>
-        <ul>
-            <li><a class = "nav_link" href="#product_drinks">Напитки</a></li>
-            <li><a class = "nav_link" href="#product_soups">Супы</a></li>
-            <li><a class = "nav_link" href="#product_salads">Салаты</a></li>
+        <ul class="ul_header">
+            <li class="li_header"><a class = "nav_link" href="#about">О нас</a></li>
+            <li class="li_header"><a class = "nav_link" href="#advantage">Собрать ланч</a></li>
+            <li class="li_header"><a class = "nav_link" href="#top">Заказы</a></li>
+            <li class="li_header"><a class = "nav_link" href="#footer">Контакты</a></li>
         </ul>
     </nav>
 </header>
 
-<section class="section_product">
-    <div class="container">
-        <h2 id="product_drinks">Напитки</h2>
+<main>
+    <section id="about">
+        <div class="container">
+            <img class="about_img" src="images/main.jpg" alt="Фото продуктов">
+            <h2>О нас</h2>
+            <p>Food Constructor - доставка бизнес-ланчей в Москве. Мы привезём вам горячую вкусную еду в любую точку города к назначенному времени.</p>
+        </div>
+    </section>
 
-        <div class="product">
-            <div class="product_container">
-                <a class = "product_link" data-product="#iphoneby">
-                    <img class="product_item" src="images/mors.jpg" alt="">
-                    <span class="product_text"><b>Морс</b></span>
-                </a>
-            </div>
+    <section id="advantage">
+        <div class="container">
+            <h2>Преимущество Food Constructor</h2>
+            <ul class="ul_advantage">
+                <li class="li_advantage">Привозим вовремя и без опозданий</li>
+                <li class="li_advantage">Убирайте непонравившиеся блюда из доставке</li>
+                <li class="li_advantage">Доставляем в специальных контейнерах, всегда тёплое</li>
+            </ul>
+        </div>
+    </section>
 
-        </div>   
-    </div>
-</section>
+    <section id="top">
+        <div class="container">
+            <h2>Топ-5 популярных блюд</h2>
+            <table>
+                <tr>
+                    <th>№</th>
+                    <th>Название</th>
+                    <th>Кол-во заказов<br>в неделю</th>
+                    <th>Цена</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Лазанья</td>
+                    <td>185</td>
+                    <td>385₽</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Том Ям с креветками</td>
+                    <td>161</td>
+                    <td>365₽</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Норвежский суп</td>
+                    <td>144</td>
+                    <td>270₽</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Жареная картошка с грибами</td>
+                    <td>132</td>
+                    <td>150₽</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Котлеты из курицы<br>с картофельным пюре</td>
+                    <td>128</td>
+                    <td>225₽</td>
+                </tr>
+            </table>
+        </div>
+    </section>
 
-<section class="section_product">
-    <div class="container">
-        <h2 id="product_soups">Супы</h2>
+</main>
 
-        <div class="product">
-            <div class="product_container">
-                <a class = "product_link" data-product="#iphoneby">
-                    <img class="product_item" src="./images/borsh.jpg" alt="">
-                    <span class="product_text"><b>Борщ</b></span>
-                </a>
-            </div>
-
-            <div class="product_container">
-                <a class = "product_link" data-product="#dyson">
-                    <img class="product_item" src="./images/kyrinii.jpg" alt="">
-                    <span class="product_text"><b>Куриный</b></span>
-                </a>
-            </div>
-
-            
-            <div class="product_container">
-                <a class = "product_link" data-product="#dyson">
-                    <img class="product_item" src="./images/harcho.jpg" alt="">
-                    <span class="product_text"><b>Харчо</b></span>
-                </a>
-            </div>
-
-            
-            <div class="product_container">
-                <a class = "product_link" data-product="#dyson">
-                    <img class="product_item" src="./images/tom_yam.jpg" alt="">
-                    <span class="product_text"><b>Том Ям</b></span>
-                </a>
-            </div>
-
-        </div>   
-    </div>
-</section>
-
-<section class="section_product">
-    <div class="container">
-        <h2 id="product_salads">Салаты</h2>
-
-        <div class="product">
-            <div class="product_container">
-                <a class = "product_link" data-product="#iphoneby">
-                    <img class="product_item" src="./images/cezar.jpg" alt="">
-                    <span class="product_text"><b>Цезарь</b></span>
-                </a>
-            </div>
-
-        </div>   
-    </div>
-</section>
-
-<footer>
-    &copy; iamfukuro
+<footer id="footer">
+    Позвонить нам +78005553535
 </footer>
-
 
 
 
