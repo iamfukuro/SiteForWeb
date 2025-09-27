@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./style.css">
+    <title>Вход</title>
+</head>
+<body class="login_page">
+
+    <main class="login_wrap">
+        <form class="login_card" action="https://httpbin.org/post" method="post">
+            <h2 class="login_title">Вход</h2>
+
+            <div class="form_row">
+                <label for="login">Логин</label>
+                <input id="login" name="login" type="text" placeholder="Логин" required>
+            </div>
+
+            <div class="form_row">
+                <label for="password">Пароль</label>
+                <input id="password" name="password" type="password" placeholder="Пароль" required>
+            </div>
+
+            <div class="form_row">
+                <label><input id="remember" name="remember" type="checkbox"> Запомнить меня</label>
+            </div>
+
+            <div class="form_actions">
+                <button type="submit" class="btn">Войти</button>
+            </div>
+        </form>
+    </main>
+
+</body>
+</html>

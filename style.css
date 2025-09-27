@@ -34,23 +34,23 @@ header {
 }
 
 /* LIST */ 
-.ul_header {
+.header_ul {
     margin: 0;
     padding-left: 2%;
     list-style: 0;
 }
 
-.li_header {
+.header_li {
     display: inline;
     margin-right: 2%
 }
 
-.ul_advantage{
+.advantage_ul{
     margin: 0;
     padding-left: 2%;
 }
 
-.li_advantage{
+.advantage_li{
     margin-right: 2%
 }
 
@@ -94,6 +94,18 @@ td:first-child {
     font-weight: bold;
 }
 
+/* FORM */
+.form_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    background-image: url("./images/form.jpg");
+    width: 100%;
+    padding: 0 2%;
+    margin: 0 auto;
+}
+
+
 /* FOOTER */
 footer {
     padding: 1% 2%;
@@ -102,4 +114,14 @@ footer {
     color: #FFF;
     font-size: 20px;
     vertical-align: center;
+}
+
+.login_wrap{
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    background-image: url("./images/form.jpg");
+    width: 100%;
+    padding: 0 2%;
+    margin: 0 auto;
 }
