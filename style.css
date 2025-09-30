@@ -1,12 +1,22 @@
+html {
+    height: 100;
+}
 body {
+    display:flex;
+    flex-direction: column;
     margin: 0;
     height: 100%;
+    min-height: 100vh;
     width: 100%;
     font-family: 'El Messiri', sans-serif;
     
     font-size: 18px;
     line-height: 1.6;
     color: #333;
+}
+
+main {
+    flex: 1
 }
 
 * {
@@ -21,7 +31,12 @@ header {
 
 .header_text {
     margin: 0;
-    padding: 2%
+    padding: 1% 1% 1% 2%;
+}
+
+    
+nav{
+    margin: 0 2%
 }
 
 .nav_link {
@@ -30,19 +45,26 @@ header {
 }
 
 .nav_link:hover{
-    color: #6495ED;
+    color: tomato
+}
+
+.nav_link.active {
+    color: tomato
 }
 
 /* LIST */ 
 .header_ul {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
     margin: 0;
-    padding-left: 2%;
+    padding: 0;
     list-style: 0;
 }
 
 .header_li {
     display: inline;
-    margin-right: 2%
+    text-align: left;
 }
 
 .advantage_ul{
@@ -105,6 +127,78 @@ td:first-child {
     margin: 0 auto;
 }
 
+/* LANCH.HTML */
+
+/* DISH */
+.h2_dish{
+    width: 100%;
+    padding: 0 2%;
+    margin: 0 auto;
+}
+
+.container_dish {
+    width: 100%;
+    padding: 0 2%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* три колонки одинаковой ширины */
+    gap: 10px; /* отступ между карточками */
+}
+
+.dish {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 30px 40px;
+    background: #fff;
+    border-radius: 35px;
+    filter: drop-shadow(17px 19px 24px rgba(0,0,0,0.13));
+    overflow: visible;
+    cursor: pointer;
+}
+
+.dish:hover{
+    border: 2px solid tomato;
+}
+.dish:hover .dish_button {
+    background: tomato;
+    color: #fff;
+}
+
+.img_dish {
+    width: 100%;
+    border-radius: 35px;
+    margin-bottom: 10px;
+}
+
+.dish_name {
+    font-size: 1rem;
+    line-height: 1;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.dish_price {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.dish_volume{
+    font-size: 0.9rem;
+    color: #777;
+    margin: 0;
+    margin-top: auto;
+}
+
+.dish_button {
+    margin-top: 10px;
+    background: #f1eee9;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
 
 /* FOOTER */
 footer {
@@ -124,4 +218,64 @@ footer {
     width: 100%;
     padding: 0 2%;
     margin: 0 auto;
+}
+
+
+@media (max-width: 800px) {
+
+    .about_img {
+        width: 500px;
+    }
+    
+    .header_ul {
+        justify-content: space-between;
+    }
+
+    .container_dish {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    
+    .about_img {
+        width: 100%;
+    }
+
+    table {
+        font-size: 16px;
+    }
+
+    .header_text {
+        text-align: center;
+    }
+    
+    .header_ul{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin: 0;
+        padding: 0;
+        list-style: 0;
+    }
+
+    .header_li {
+        font-size: 22px;
+    }
+
+    .h2_dish {
+        text-align: center;
+    }
+
+    .container_dish {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+@media (max-width: 400px) {
+    table {
+        font-size: 14px;
+    }
 }

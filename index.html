@@ -16,8 +16,8 @@
     <h1 class = "header_text">Food Constructor</h1>
     <nav>
         <ul class="header_ul">
-            <li class="header_li"><a class = "nav_link" href="#about">О нас</a></li>
-            <li class="header_li"><a class = "nav_link" href="#advantage">Собрать ланч</a></li>
+            <li class="header_li"><a class = "nav_link active" href="#about">О нас</a></li>
+            <li class="header_li"><a class = "nav_link" href="lanch.html">Собрать ланч</a></li>
             <li class="header_li"><a class = "nav_link" href="#top">Заказы</a></li>
             <li class="header_li"><a class = "nav_link" href="#footer">Контакты</a></li>
             <li class="header_li"><a class="nav_link" href="login.html">Вход</a></li>
@@ -94,19 +94,16 @@
             <h2>Связаться с нами</h2>
 
             <form class="form_card" action="https://httpbin.org/post" method="post" enctype="multipart/form-data">
-                <!-- ФИО -->
                 <div class="form_row">
                     <label for="fio">ФИО</label>
                     <input id="fio" name="fio" type="text" placeholder="Иван Иванов" required>
                 </div>
 
-                <!-- Email -->
                 <div class="form_row">
                     <label for="email">Email</label>
                     <input id="email" name="email" type="email" placeholder="name@example.com" required>
                 </div>
 
-                <!-- Откуда узнали  -->
                 <fieldset class="form_row">
                     <legend>Откуда узнали о нас</legend>
                     <label><input type="radio" name="source" value="internet" required> Интернет</label>
@@ -115,7 +112,6 @@
                     <label><input type="radio" name="source" value="other"> Другое</label>
                 </fieldset>
 
-                <!-- Тип обращения (select) -->
                 <div class="form_row">
                     <label for="type">Тип обращения</label>
                     <select id="type" name="type" required>
@@ -125,20 +121,17 @@
                     </select>
                 </div>
 
-                <!-- Текст обращения -->
                 <div class="form_row">
                     <label for="message">Текст сообщения</label>
                     <textarea id="message" name="message" rows="6" placeholder="Опишите ваш вопрос или предложение" required></textarea>
                 </div>
 
-                <!-- Вложения -->
                 <div class="form_row">
                     <label for="attachment">Вложения (jpg, jpeg, png, pdf)</label>
                     <input id="attachment" name="attachment" type="file" accept=".jpg,.jpeg,.png,.pdf">
                 </div>
 
-                <!-- Согласие -->
-                <div class="form_row checkbox_row">
+                <div class="form_row">
                     <label><input id="consent" name="consent" type="checkbox" required> Даю согласие на обработку персональных данных</label>
                 </div>
 
