@@ -199,6 +199,42 @@ td:first-child {
     cursor: pointer;
 }
 
+.dish.active{
+    border: 2px solid tomato;
+}
+
+/* order */
+
+#order h2{
+    text-align: center;
+    padding: 0 2%
+}
+
+.container_order_form{
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-around;
+    padding: 0 2%;
+}
+
+.order_category, .order_form_row{
+    display: flex;
+    flex-direction: column;
+}
+
+#order_total {
+    font-weight: bold;
+}
+
+.order_category h3{
+    margin: 0
+}
+
+.order_category.disable{
+    display: none
+}
+
 
 /* FOOTER */
 footer {

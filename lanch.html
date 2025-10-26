@@ -11,7 +11,6 @@
 <body>
 
 
-
 <header>
     <h1 class = "header_text">Food Constructor</h1>
     <nav>
@@ -29,85 +28,97 @@
 
     <section id="soups">
         <h2 class="h2_dish">Выберите суп</h2>
-        <div class="container_dish">
-            <div class="dish">
-                <img src="./images/menu/soups/gazpacho.jpg" alt="Гаспачо" class="img_dish">
-                <p class="dish_price">195₽</p>
-                <p class="dish_name">Гаспачо</p>
-                <p class="dish_volume">350 г</p>
-                <button class="dish_button">Добавить</button>
-            </div>
-            <div class="dish">
-                <img src="./images/menu/soups/mushroom_soup.jpg" alt="Грибной суп-пюре" class="img_dish">
-                <p class="dish_price">185₽</p>
-                <p class="dish_name">Грибной суп-пюре</p>
-                <p class="dish_volume">330 г</p>
-                <button class="dish_button">Добавить</button>
-            </div>
-            <div class="dish">
-                <img src="./images/menu/soups/norwegian_soup.jpg" alt="Норвежский суп" class="img_dish">
-                <p class="dish_price">270₽</p>
-                <p class="dish_name">Норвежский суп</p>
-                <p class="dish_volume">330 г</p>
-                <button class="dish_button">Добавить</button>
-            </div>
-        </div>
+        <div class="container_dish" data-category = "soups"></div>
     </section>
 
     <section id="main_course">
         <h2 class="h2_dish">Выберите основное блюдо</h2>
-        <div class="container_dish">
-            <div class="dish">
-                <img src="./images/menu/main_course/friedpotatoeswithmushrooms1.jpg" alt="Жареная картошка с грибами" class="img_dish">
-                <p class="dish_price">150₽</p>
-                <p class="dish_name">Жареная картошка с грибами</p>
-                <p class="dish_volume">250 г</p>
-                <button class="dish_button">Добавить</button>
-            </div>
-            <div class="dish">
-                <img src="./images/menu/soups/gazpacho.jpg" alt="Лазанья" class="img_dish">
-                <p class="dish_price">385₽</p>
-                <p class="dish_name">Лазанья</p>
-                <p class="dish_volume">310 г</p>
-                <button class="dish_button">Добавить</button>
-            </div>
-            <div class="dish">
-                <img src="./images/menu/soups/gazpacho.jpg" alt="Котлеты из курицы с картофельным пюре" class="img_dish">
-                <p class="dish_price">225₽</p>
-                <p class="dish_name">Котлеты из курицы с картофельным пюре</p>
-                <p class="dish_volume">280 г</p>
-                <button class="dish_button">Добавить</button>
-            </div>
-        </div>
+        <div class="container_dish" data-category = "main_course"></div>
     </section>
 
     <section id="beverages">
         <h2 class="h2_dish">Выберите напиток</h2>
-        <div class="container_dish">
-            <div class="dish">
-                <img src="./images/menu/beverages/orangejuice.jpg" alt="Апельсиновый сок" class="img_dish">
-                <p class="dish_price">120₽</p>
-                <p class="dish_name">Апельсиновый сок</p>
-                <p class="dish_volume">300 мл</p>
-                <button class="dish_button">Добавить</button>
-            </div>
-            <div class="dish">
-                <img src="./images/menu/beverages/applejuice.jpg" alt="Яблочный сок" class="img_dish">
-                <p class="dish_price">90₽</p>
-                <p class="dish_name">Яблочный сок</p>
-                <p class="dish_volume">300 мл</p>
-                <button class="dish_button">Добавить</button>
-            </div>
-            <div class="dish">
-                <img src="./images/menu/beverages/carrotjuice.jpg" alt="Морковный сок" class="img_dish">
-                <p class="dish_price">110₽</p>
-                <p class="dish_name">Морковный сок</p>
-                <p class="dish_volume">300 мл</p>
-                <button class="dish_button">Добавить</button>
-            </div>
-        </div>
+        <div class="container_dish" data-category = "beverages"></div>
     </section>
 
+    <section id="order">
+            <h2>Сделать заказ</h2>
+            <div class="container_order_form">
+                <div class="order_summary" id="order_summary">
+                    <h3>Ничего не выбрано</h3>
+                    <div class="order_category disable">
+                        <h3>Суп</h3>
+                        <p id="order_soups">Суп не выбран</p>
+                    </div>
+
+                    <div class="order_category disable">
+                        <h3>Главное блюдо</h3>
+                        <p id="order_main_course">Блюдо не выбрано</p>
+                    </div>
+
+                    <div class="order_category disable">
+                        <h3>Напиток</h3>
+                        <p id="order_beverages">Напиток не выбран</p>
+                    </div>
+
+                    <div class="order_category disable">
+                        <h3>Стоимость заказа</h3>
+                        <p id="order_total">0₽</p>
+                    </div>
+
+                    <div class="order_category">
+                        <label for="comments">Комментарии к заказу</label>
+                        <textarea id="comments" name="comments" form="order_form"></textarea>
+                    </div>
+                </div>
+
+                <form class="order_form" id="order_form" action="https://httpbin.org/post" method="post" enctype="multipart/form-data">
+                    <h3>Ваши данные</h3>
+                    
+                    <div class="order_form_row">
+                        <label for="fio">Имя</label>
+                        <input id="fio" name="fio" type="text" placeholder="Иван Иванов" required>
+                    </div>
+
+                    <div class="order_form_row">
+                        <label for="email">Email</label>
+                        <input id="email" name="email" type="email" placeholder="name@example.com" required>
+                    </div>
+                    
+                    <div class="order_form_row">
+                        <label><input id="consent" name="consent" type="checkbox" required>Получать информацию о скидках и акциях</label>
+                    </div>
+
+                    <div class="order_form_row">
+                        <label for="tel">Телефон</label>
+                        <input id="tel" name="tel" type="tel" placeholder="+7 (800) 555-35-35" required>
+                    </div>
+
+                    <div class="order_form_row">
+                        <label for="addr">Адрес</label>
+                        <input id="addr" name="addr" type="text" placeholder="Г. Москва, пр. Мира, 1189А, кв. 9991" required>
+                    </div>
+
+                    <fieldset class="form_row">
+                        <legend>Время доставки</legend>
+                        <label><input type="radio" name="source" value="internet" required>Как можно быстрее</label>
+                        <label><input type="radio" name="source" value="friend">К указанному времени</label>
+                    </fieldset>
+
+                    <div class="form_actions">
+                        <button type="submit" class="btn">Отправить</button>
+                    </div>
+
+                    <input type="hidden" name="soup" id="input-soup">
+                    <input type="hidden" name="main" id="input-main">
+                    <input type="hidden" name="drink" id="input-drink">
+                </form>
+            </div>
+
+
+
+        </div>
+    </section>
 
 </main>
 
@@ -115,7 +126,7 @@
     Позвонить нам +78005553535
 </footer>
 
-
+<script src="index.js"> </script>
 
 </body>
 </html>
