@@ -116,6 +116,29 @@ td:first-child {
     font-weight: bold;
 }
 
+/* COMBOS */
+
+#combos {
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+}
+
+.container_combos{
+    display: flex;
+    width: 33%;
+    justify-content: space-around;
+}
+
+.img_combo{
+    border-radius: 35px;
+    margin-bottom: 10px;
+}
+.img_combo:hover{
+    transform: translateY(-1px);
+}
+
 /* FORM */
 .form_container{
     display: flex;
