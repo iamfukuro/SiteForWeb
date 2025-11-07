@@ -1,26 +1,57 @@
-const dishes = [
-  { keyword: "gaspacho", name: "Гаспачо", price: 250, category: "soups", count: "350 г", image: "soups/gazpacho" },
-  { keyword: "mushroom_soup", name: "Грибной суп-пюре", price: 185, category: "soups", count: "330 г", image: "soups/mushroom_soup" },
-  { keyword: "norwegian_soup", name: "Норвежский суп", price: 270, category: "soups", count: "330 г", image: "soups/norwegian_soup" },
-  { keyword: "friedpotatoeswithmushrooms1", name: "Жареная картошка с грибами", price: 150, category: "main_course", count: "250 г", image: "main_course/friedpotatoeswithmushrooms" },
-  { keyword: "lasagna", name: "Лазанья", price: 385, category: "main_course", count: "310 г", image: "main_course/lasagna" },
-  { keyword: "chickencutletsandmashedpotatoes", name: "Котлеты из курицы с картофельным пюре", price: 225, category: "main_course", count: "280 г", image: "main_course/chickencutletsandmashedpotatoes" },
-  { keyword: "orangejuice", name: "Апельсиновый сок", price: 120, category: "beverages", count: "300 мл", image: "beverages/orangejuice" },
-  { keyword: "applejuice", name: "Яблочный сок", price: 90, category: "beverages", count: "300 мл", image: "beverages/applejuice" },
-  { keyword: "carrotjuice", name: "Морковный сок", price: 110, category: "beverages", count: "300 мл", image: "beverages/carrotjuice" },
-];
+const categories = ["soups", "main_course", "beverages", "desserts", "salads_starters"];
 
-function renderMenu() {
-    const categories = ["soups", "main_course", "beverages"];
-
+function renderFilters(){
     categories.forEach(category => {
         const section = document.querySelector(`[data-category="${category}"]`);
         section.innerHTML = "";
 
-        const filtered = dishes.filter(d => d.category === category).sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+        const filterBlock = document.createElement("div");
+        filterBlock.classList.add("filters");
+        filtersByCategory[category].forEach(f => {
+            const btn = document.createElement("button");
+            btn.classList.add("filter_btn");
+            btn.textContent = f.name;
+            btn.dataset.kind = f.kind;
+            btn.addEventListener("click", () => toggleFilter(category, f.kind, btn));
+            filterBlock.appendChild(btn);
+        });
+        section.parentElement.insertBefore(filterBlock, section);
+    })
+};
+renderFilters();
+
+const selected = {
+    soups: null,
+    main_course: null,
+    salads_starters: null,
+    beverages: null,
+    desserts: null
+};
+
+const selectedPrices = {
+    soups: 0,
+    main_course: 0,
+    salads_starters: 0,
+    beverages: 0,
+    desserts: 0
+}
+
+function renderMenu(cat, filt) {
+    
+    categories.forEach(category => {
+        if(cat && category !== cat) return;
+        const section = document.querySelector(`[data-category="${category}"]`);
+        section.innerHTML = "";
+
+        const filtered = filt ? 
+        dishes.filter(d => d.category === category && (!filt || d.kind === filt)).sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+        :
+        dishes.filter(d => d.category === category).sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+        
         filtered.forEach(dish => {
             const card = document.createElement("div");
             card.classList.add("dish");
+            if(selected[category] === dish.keyword) card.classList.add("active");
             card.setAttribute("data-keyword", dish.keyword);
             card.innerHTML = `
                 <img src="./images/menu/${dish.image}.jpg" alt="${dish.name}" class="img_dish">
@@ -31,25 +62,10 @@ function renderMenu() {
             `;
             section.appendChild(card);
         });
-
-                // 
-
-                // <button class="dish_button">Добавить</button>
     })
 }
 renderMenu();
 
-const selected = {
-    soups: null,
-    main_course: null,
-    beverages: null
-};
-
-const selectedPrices = {
-    soups: 0,
-    main_course: 0,
-    beverages: 0
-}
 
 document.body.addEventListener("click", e => {
     if(e.target.classList.contains("dish_button")) {
@@ -72,7 +88,6 @@ document.body.addEventListener("click", e => {
         const dishInfo = dishes.filter(d => d.keyword == dish)[0];
         selectedPrices[category] = dishInfo.price;
 
-        console.log(selectedPrices[0])
         document.getElementById(`order_${category}`).textContent = `${dishInfo.name} ${dishInfo.price}₽`;
         document.getElementById(`order_total`).textContent = `${selectedPrices.soups + selectedPrices.main_course + selectedPrices.beverages}₽`;
     }
@@ -87,6 +102,28 @@ function orderDisplay(){
 
     const h3 = section.querySelector('h3').textContent = 'Ваш заказ';
 };
+
+
+const activeFilters = {
+  soups: null,
+  main_course: null,
+  beverages: null,
+  desserts: null,
+  salads_starters: null
+};
+
+function toggleFilter(category,filter,btn){
+    if(activeFilters[category] === filter){
+        btn.classList.remove("active");
+        activeFilters[category] = null;
+        return renderMenu(category);
+    };
+
+    if(activeFilters[category]) btn.parentElement.querySelector(`[data-kind="${activeFilters[category]}"]`).classList.remove("active");
+    activeFilters[category] = filter;
+    btn.classList.add("active");
+    renderMenu(category, filter);
+}
 
 document.querySelector(".order_form").addEventListener("submit", e => {
   document.querySelector('[name="soup"]').value = selected.soups || "";

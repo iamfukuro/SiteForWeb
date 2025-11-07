@@ -127,7 +127,64 @@ td:first-child {
     margin: 0 auto;
 }
 
+.form_row{
+    border: none;
+    padding: 0;
+}
+
+.form_row legend{
+    padding: 0;
+}
+
+.form_row label {
+    display:block;
+}
+
+.small_label {
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+    margin-top: 4px;
+}
+
 /* LANCH.HTML */
+
+/* filter */
+
+.filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 0 2%;
+    flex-wrap: wrap;
+}
+
+.filter_btn {
+    padding: 8px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 20px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.filter_btn:hover {
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+    transform: translateY(-1px);
+}
+
+.filter_btn.active {
+    background: #ff6b6b;
+    border-color: #ff6b6b;
+    color: white;
+}
+
+.filter_btn:active {
+    transform: translateY(0);
+}
 
 /* DISH */
 .h2_dish{
