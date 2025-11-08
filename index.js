@@ -44,7 +44,6 @@ function renderMenu(cat, filt) {
         section.innerHTML = "";
 
         const filtered = dishes.filter(d => d.category === category && (!filt || d.kind === filt)).sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-        
         filtered.forEach(dish => {
             const card = document.createElement("div");
             card.classList.add("dish");
