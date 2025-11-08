@@ -43,11 +43,8 @@ function renderMenu(cat, filt) {
         const section = document.querySelector(`[data-category="${category}"]`);
         section.innerHTML = "";
 
-        const filtered = filt ? 
-        dishes.filter(d => d.category === category && (!filt || d.kind === filt)).sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
-        :
-        dishes.filter(d => d.category === category).sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-        
+        const filtered = dishes.filter(d => d.category === category && (!filt || d.kind === filt)).sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+
         filtered.forEach(dish => {
             const card = document.createElement("div");
             card.classList.add("dish");
@@ -125,11 +122,78 @@ function toggleFilter(category,filter,btn){
     renderMenu(category, filter);
 }
 
+function checkCombos() {
+  const s = selected;
+
+  const MESSAGES = {
+    NOTHING: 'Ничего не выбрано. Выберите блюда для заказа',
+    CHOOSE_DRINK: 'Выберите напиток',
+    CHOOSE_MAIN_OR_SALAD: 'Выберите главное блюдо/салат/стартер',
+    CHOOSE_SOUP_OR_MAIN: 'Выберите суп или главное блюдо',
+    CHOOSE_MAIN: 'Выберите главное блюдо'
+  };
+
+  // 1. Ничего не выбрано
+  if (!s.soups && !s.main_course && !s.salads_starters && !s.beverages && !s.desserts) return MESSAGES.NOTHING;
+
+  // 2. Есть комбо без напитка (любая комбинация блюд, но напитка нет)
+  const hasMainElements = s.soups || s.main_course || s.salads_starters;
+  if (hasMainElements && !s.beverages) return MESSAGES.CHOOSE_DRINK;
+
+  // 3. Выбран суп, но нет главного и нет салата
+  if (s.soups && !s.main_course && !s.salads_starters) return MESSAGES.CHOOSE_MAIN_OR_SALAD;
+
+  // 4. Выбран салат/стартер, но нет супа и главного
+  if (s.salads_starters && !s.soups && !s.main_course) return MESSAGES.CHOOSE_SOUP_OR_MAIN;
+
+  // 5. Выбран только напиток или десерт, но нет главного
+  if ((s.beverages || s.desserts) && !s.main_course) return MESSAGES.CHOOSE_MAIN;
+
+  // Всё в порядке
+  return null;
+}
+
+function createNotification(message) {
+  const existing = document.getElementById('combo-notification-overlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'combo-notification-overlay';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+
+  const card = document.createElement('div');
+  card.className = 'combo-notification-card';
+
+  const text = document.createElement('div');
+  text.className = 'combo-notification-text';
+  text.textContent = message;
+
+  const btn = document.createElement('button');
+  btn.className = 'combo-notification-ok';
+  btn.type = 'button';
+  btn.textContent = 'Окей';
+
+  btn.addEventListener('click', () => overlay.remove());
+
+  card.appendChild(text);
+  card.appendChild(btn);
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+}
+
+
+
+
 document.querySelector(".order_form").addEventListener("submit", e => {
-  document.querySelector('[name="soup"]').value = selected.soups || "";
-  document.querySelector('[name="main"]').value = selected.main_course || "";
-  document.querySelector('[name="drink"]').value = selected.beverages || "";
+    const msg = checkCombos();
+    if (msg) {
+        e.preventDefault();
+        createNotification(msg);
+    };
+    document.querySelector('[name="soup"]').value = selected.soups || "";
+    document.querySelector('[name="main"]').value = selected.main_course || "";
+    document.querySelector('[name="salad/starter"]').value = selected.salads_starters || "";
+    document.querySelector('[name="drink"]').value = selected.beverages || "";
+    document.querySelector('[name="dessert"]').value = selected.desserts || "";
 });
-
-
-// Если блюда не были выбраны, блок "Стоимость заказа" скрыт так же, как и блоки с категориями.
