@@ -26,6 +26,100 @@
 
 <main>
 
+    <section id="combos">
+    <h2 class="combo_title">Доступные для заказа комбо</h2>
+
+    <div class="combos_grid">
+        <!-- Комбо 1 -->
+        <div class="container_combos">
+        <div class="combo_item">
+            <img src="./images/combo/soups.svg" alt="Суп" class="img_combo">
+            <p>Суп</p>
+        </div>
+        <div class="combo_item">
+            <img src="./images/combo/main_course.svg" alt="Главное блюдо" class="img_combo">
+            <p>Главное блюдо</p>
+        </div>
+        <div class="combo_item">
+            <img src="./images/combo/salad_starters.svg" alt="Салат" class="img_combo">
+            <p>Салат</p>
+        </div>
+        <div class="combo_item">
+            <img src="./images/combo/beverages.svg" alt="Напиток" class="img_combo">
+            <p>Напиток</p>
+        </div>
+        </div>
+
+        <!-- Комбо 2 -->
+        <div class="container_combos">
+        <div class="combo_item">
+            <img src="./images/combo/soups.svg" alt="Суп" class="img_combo">
+            <p>Суп</p>
+        </div>
+        <div class="combo_item">
+            <img src="./images/combo/main_course.svg" alt="Главное блюдо" class="img_combo">
+            <p>Главное блюдо</p>
+        </div>
+        <div class="combo_item">
+            <img src="./images/combo/beverages.svg" alt="Напиток" class="img_combo">
+            <p>Напиток</p>
+        </div>
+        </div>
+
+        <!-- Комбо 3 -->
+        <div class="container_combos">
+        <div class="combo_item">
+            <img src="./images/combo/soups.svg" alt="Суп" class="img_combo">
+            <p>Суп</p>
+        </div>
+        <div class="combo_item">
+            <img src="./images/combo/salad_starters.svg" alt="Салат" class="img_combo">
+            <p>Салат</p>
+        </div>
+        <div class="combo_item">
+            <img src="./images/combo/beverages.svg" alt="Напиток" class="img_combo">
+            <p>Напиток</p>
+        </div>
+        </div>
+
+        <!-- Комбо 4 -->
+        <div class="container_combos">
+        <div class="combo_item">
+            <img src="./images/combo/main_course.svg" alt="Главное блюдо" class="img_combo">
+            <p>Главное блюдо</p>
+        </div>
+        <div class="combo_item">
+            <img src="./images/combo/salad_starters.svg" alt="Салат" class="img_combo">
+            <p>Салат</p>
+        </div>
+        <div class="combo_item">
+            <img src="./images/combo/beverages.svg" alt="Напиток" class="img_combo">
+            <p>Напиток</p>
+        </div>
+        </div>
+
+        <!-- Комбо 5 -->
+        <div class="container_combos">
+        <div class="combo_item">
+            <img src="./images/combo/main_course.svg" alt="Главное блюдо" class="img_combo">
+            <p>Главное блюдо</p>
+        </div>
+        <div class="combo_item">
+            <img src="./images/combo/beverages.svg" alt="Напиток" class="img_combo">
+            <p>Напиток</p>
+        </div>
+        </div>
+
+        <!-- Десерт -->
+        <div class="container_combos">
+        <div class="combo_item">
+            <img src="./images/combo/desserts.svg" alt="Десерт" class="img_combo">
+            <p>Десерт (можно добавить к любому комбо)</p>
+        </div>
+        </div>
+    </div>
+    </section>
+
     <section id="soups">
         <h2 class="h2_dish">Выберите суп</h2>
         <div class="container_dish" data-category = "soups"></div>
@@ -97,41 +191,41 @@
                     
                     <div class="order_form_row">
                         <label for="fio">Имя</label>
-                        <input id="fio" name="fio" type="text" placeholder="Иван Иванов" required>
+                        <input id="fio" name="fio" type="text" placeholder="Иван Иванов" >
                     </div>
 
                     <div class="order_form_row">
                         <label for="email">Email</label>
-                        <input id="email" name="email" type="email" placeholder="name@example.com" required>
+                        <input id="email" name="email" type="email" placeholder="name@example.com" >
                     </div>
                     
                     <div class="order_form_row">
-                        <label><input id="consent" name="consent" type="checkbox" required>Получать информацию о скидках и акциях</label>
+                        <label><input id="consent" name="consent" type="checkbox" >Получать информацию о скидках и акциях</label>
                     </div>
 
                     <div class="order_form_row">
                         <label for="tel">Телефон</label>
-                        <input id="tel" name="tel" type="tel" placeholder="+7 (800) 555-35-35" required>
+                        <input id="tel" name="tel" type="tel" placeholder="+7 (800) 555-35-35" >
                     </div>
 
                     <div class="order_form_row">
                         <label for="addr">Адрес</label>
-                        <input id="addr" name="addr" type="text" placeholder="Г. Москва, пр. Мира, 1189А, кв. 9991" required>
+                        <input id="addr" name="addr" type="text" placeholder="Г. Москва, пр. Мира, 1189А, кв. 9991" >
                         <label class="small_label">Доставка осуществляется только по Москве</label>
                     </div>
 
                     <fieldset class="form_row">
                         <legend>Время доставки</legend>
-                        <label><input type="radio" name="source" value="internet" required>Как можно быстрее</label>
+                        <label><input type="radio" name="source" value="internet" >Как можно быстрее</label>
                         <label><input type="radio" name="source" value="friend">К указанному времени</label>
                     </fieldset>
 
                     <div class="form_row">
                         <label for="form_deltime">Укажите время доставки</label>
-                        <input id="form_deltime" name="form_deltime" type="time" min="07:00" max="23:00" required>
+                        <input id="form_deltime" name="form_deltime" type="time" min="07:00" max="23:00" >
                         <label class="small_label">Доставка осуществляется c 07:00 до 23:00</label>
                     </div>
-                    
+
                     <div class="form_actions">
                         <button type="reset" class="btn btn_secondary">Сбросить</button>
                         <button type="submit" class="btn btn_primary">Отправить</button>
