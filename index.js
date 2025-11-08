@@ -86,9 +86,17 @@ document.body.addEventListener("click", e => {
         selectedPrices[category] = dishInfo.price;
 
         document.getElementById(`order_${category}`).textContent = `${dishInfo.name} ${dishInfo.price}₽`;
-        document.getElementById(`order_total`).textContent = `${selectedPrices.soups + selectedPrices.main_course + selectedPrices.beverages}₽`;
+        document.getElementById(`order_total`).textContent = `${getPrices()}₽`;
     }
 });
+
+function getPrices(){
+    let prices = 0;
+    for(const key in selectedPrices){
+        prices += selectedPrices[key];
+    }
+    return prices;
+};
 
 function orderDisplay(){
     const section = document.getElementById(`order_summary`);
