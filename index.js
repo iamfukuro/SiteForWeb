@@ -86,9 +86,17 @@ document.body.addEventListener("click", e => {
         selectedPrices[category] = dishInfo.price;
 
         document.getElementById(`order_${category}`).textContent = `${dishInfo.name} ${dishInfo.price}₽`;
-        document.getElementById(`order_total`).textContent = `${selectedPrices.soups + selectedPrices.main_course + selectedPrices.beverages}₽`;
+        document.getElementById(`order_total`).textContent = `${getPrices()}₽`;
     }
 });
+
+function getPrices(){
+    let prices = 0;
+    for(const key in selectedPrices){
+        prices += selectedPrices[key];
+    }
+    return prices;
+};
 
 function orderDisplay(){
     const section = document.getElementById(`order_summary`);
@@ -137,17 +145,17 @@ function checkCombos() {
   if (!s.soups && !s.main_course && !s.salads_starters && !s.beverages && !s.desserts) return MESSAGES.NOTHING;
 
   // 2. Есть комбо без напитка (любая комбинация блюд, но напитка нет)
-  const hasMainElements = s.soups || s.main_course || s.salads_starters;
+  const hasMainElements = s.soups || s.main_course
   if (hasMainElements && !s.beverages) return MESSAGES.CHOOSE_DRINK;
 
-  // 3. Выбран суп, но нет главного и нет салата
+  // 3. Выбран суп, но нет остального
   if (s.soups && !s.main_course && !s.salads_starters) return MESSAGES.CHOOSE_MAIN_OR_SALAD;
 
   // 4. Выбран салат/стартер, но нет супа и главного
-  if (s.salads_starters && !s.soups && !s.main_course) return MESSAGES.CHOOSE_SOUP_OR_MAIN;
+  if (s.salads_starters && !hasMainElements) return MESSAGES.CHOOSE_SOUP_OR_MAIN;
 
   // 5. Выбран только напиток или десерт, но нет главного
-  if ((s.beverages || s.desserts) && !s.main_course) return MESSAGES.CHOOSE_MAIN;
+  if ((s.beverages || s.desserts) && !hasMainElements) return MESSAGES.CHOOSE_MAIN;
 
   // Всё в порядке
   return null;
