@@ -1,4 +1,26 @@
-const categories = ["soups", "main_course", "beverages", "desserts", "salads_starters"];
+const categories = ["soup", "maincourse", "drink", "dessert", "salad"];
+
+async function loadDishes() {
+    try {
+        const response = await fetch('https://edu.std-900.ist.mospolytech.ru/labs/api/dishes', {
+            cache: 'no-store'
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        window.dishes = data;
+        renderMenu();
+
+    } catch (err) {
+        console.error("Ошибка загрузки блюд:", err);
+    }
+}
+
+loadDishes();
 
 function renderFilters(){
     categories.forEach(category => {
@@ -21,36 +43,36 @@ function renderFilters(){
 renderFilters();
 
 const selected = {
-    soups: null,
-    main_course: null,
-    salads_starters: null,
-    beverages: null,
-    desserts: null
+    soup: null,
+    maincourse: null,
+    salad: null,
+    drink: null,
+    dessert: null
 };
 
 const selectedPrices = {
-    soups: 0,
-    main_course: 0,
-    salads_starters: 0,
-    beverages: 0,
-    desserts: 0
+    soup: 0,
+    maincourse: 0,
+    salad: 0,
+    drink: 0,
+    dessert: 0
 }
 
 function renderMenu(cat, filt) {
-    
     categories.forEach(category => {
         if(cat && category !== cat) return;
         const section = document.querySelector(`[data-category="${category}"]`);
         section.innerHTML = "";
 
-        const filtered = dishes.filter(d => d.category === category && (!filt || d.kind === filt)).sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+        const filtered = window.dishes.filter(d => d.category.replace("-", "") === category && (!filt || d.kind === filt)).sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+
         filtered.forEach(dish => {
             const card = document.createElement("div");
             card.classList.add("dish");
             if(selected[category] === dish.keyword) card.classList.add("active");
             card.setAttribute("data-keyword", dish.keyword);
             card.innerHTML = `
-                <img src="./images/menu/${dish.image}.jpg" alt="${dish.name}" class="img_dish">
+                <img src="${dish.image}" alt="${dish.name}" class="img_dish">
                 <p class="dish_price">${dish.price}₽</p>
                 <p class="dish_name">${dish.name}</p>
                 <p class="dish_volume">${dish.count}</p>
@@ -59,29 +81,28 @@ function renderMenu(cat, filt) {
             section.appendChild(card);
         });
     })
-}
-renderMenu();
+};
 
 
 document.body.addEventListener("click", e => {
     if(e.target.classList.contains("dish_button")) {
-        if(!selected.soups && !selected.main_course && !selected.beverages) orderDisplay();
+        if(!selected.soup && !selected.maincourse && !selected.drink) orderDisplay();
 
-        const category = e.target.parentElement.parentElement.getAttribute("data-category"),
+        const category = e.target.parentElement.parentElement.getAttribute("data-category").replace("-", ""),
         dish = e.target.parentElement.getAttribute("data-keyword");
 
         if(selected[category] === dish) return;
 
         if(selected[category]){
             const dishElement = document.querySelector(`[data-keyword="${selected[category]}"]`);
-            dishElement.classList.remove("active")
+            if(dishElement) dishElement.classList.remove("active");
         }
 
         const newDishElement = document.querySelector(`[data-keyword="${dish}"]`);
         newDishElement.classList.add("active");
         selected[category] = dish;
 
-        const dishInfo = dishes.filter(d => d.keyword == dish)[0];
+        const dishInfo = window.dishes.filter(d => d.keyword == dish)[0];
         selectedPrices[category] = dishInfo.price;
 
         document.getElementById(`order_${category}`).textContent = `${dishInfo.name} ${dishInfo.price}₽`;
@@ -109,11 +130,11 @@ function orderDisplay(){
 
 
 const activeFilters = {
-  soups: null,
+  soup: null,
   main_course: null,
-  beverages: null,
-  desserts: null,
-  salads_starters: null
+  drink: null,
+  dessert: null,
+  salad: null
 };
 
 function toggleFilter(category,filter,btn){
@@ -141,20 +162,20 @@ function checkCombos() {
   };
 
   // 1. Ничего не выбрано
-  if (!s.soups && !s.main_course && !s.salads_starters && !s.beverages && !s.desserts) return MESSAGES.NOTHING;
+  if (!s.soup && !s.maincourse && !s.salad && !s.drink && !s.dessert) return MESSAGES.NOTHING;
 
   // 2. Есть комбо без напитка (любая комбинация блюд, но напитка нет)
-  const hasMainElements = s.soups || s.main_course
-  if (hasMainElements && !s.beverages) return MESSAGES.CHOOSE_DRINK;
+  const hasMainElements = s.soup || s.maincourse
+  if (hasMainElements && !s.drink) return MESSAGES.CHOOSE_DRINK;
 
   // 3. Выбран суп, но нет остального
-  if (s.soups && !s.main_course && !s.salads_starters) return MESSAGES.CHOOSE_MAIN_OR_SALAD;
+  if (s.soup && !s.maincourse && !s.salad) return MESSAGES.CHOOSE_MAIN_OR_SALAD;
 
   // 4. Выбран салат/стартер, но нет супа и главного
-  if (s.salads_starters && !hasMainElements) return MESSAGES.CHOOSE_SOUP_OR_MAIN;
+  if (s.salad && !hasMainElements) return MESSAGES.CHOOSE_SOUP_OR_MAIN;
 
   // 5. Выбран только напиток или десерт, но нет главного
-  if ((s.beverages || s.desserts) && !hasMainElements) return MESSAGES.CHOOSE_MAIN;
+  if ((s.drink || s.dessert) && !hasMainElements) return MESSAGES.CHOOSE_MAIN;
 
   // Всё в порядке
   return null;
@@ -198,9 +219,9 @@ document.querySelector(".order_form").addEventListener("submit", e => {
         e.preventDefault();
         createNotification(msg);
     };
-    document.querySelector('[name="soup"]').value = selected.soups || "";
-    document.querySelector('[name="main"]').value = selected.main_course || "";
-    document.querySelector('[name="salad/starter"]').value = selected.salads_starters || "";
-    document.querySelector('[name="drink"]').value = selected.beverages || "";
-    document.querySelector('[name="dessert"]').value = selected.desserts || "";
+    document.querySelector('[name="soup"]').value = selected.soup || "";
+    document.querySelector('[name="main"]').value = selected.maincourse || "";
+    document.querySelector('[name="salad/starter"]').value = selected.salad || "";
+    document.querySelector('[name="drink"]').value = selected.drink || "";
+    document.querySelector('[name="dessert"]').value = selected.dessert || "";
 });
