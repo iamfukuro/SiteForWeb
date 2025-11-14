@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset = "UTF-8">
+    <link rel = "stylesheet" href ="./style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=El+Messiri&family=Jura:wght@300&display=swap" rel="stylesheet">
+    <title>Test</title>
+</head>
+<body>
+
+
+<header>
+    <h1 class = "header_text">Food Constructor</h1>
+    <nav>
+        <ul class="header_ul">
+            <li class="header_li"><a class="nav_link" href="index.html">О нас</a></li>
+            <li class="header_li"><a class="nav_link" href="lunch.html">Собрать ланч</a></li>
+            <li class="header_li"><a class="nav_link active" href="order.html">Оформить заказ</a></li>
+            <li class="header_li"><a class="nav_link" href="order.html">Заказы</a></li>
+            <li class="header_li"><a class="nav_link" href="#footer">Контакты</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+
+    <section id="order_compound">
+        <h2 class="h2_dish">Состав заказа</h2>
+        <div class="container_dish"></div>
+    </section>
+
+    <section id="order">
+            <h2>Сделать заказ</h2>
+            <div class="container_order_form">
+                <div class="order_summary" id="order_summary">
+                    <h3>Ничего не выбрано</h3>
+                    <div class="order_category disable">
+                        <h3>Суп</h3>
+                        <p id="order_soup">Суп не выбран</p>
+                    </div>
+
+                    <div class="order_category disable">
+                        <h3>Главное блюдо</h3>
+                        <p id="order_maincourse">Блюдо не выбрано</p>
+                    </div>
+
+                    <div class="order_category disable">
+                        <h3>Салат/Стартер</h3>
+                        <p id="order_salad">Салат/стартер не выбран</p>
+                    </div>
+
+                    <div class="order_category disable">
+                        <h3>Напиток</h3>
+                        <p id="order_drink">Напиток не выбран</p>
+                    </div>
+                    
+                    <div class="order_category disable">
+                        <h3>Десерт</h3>
+                        <p id="order_dessert">Десерт не выбран</p>
+                    </div>
+
+                    <div class="order_category disable">
+                        <h3>Стоимость заказа</h3>
+                        <p id="order_total">0₽</p>
+                    </div>
+
+                    <div class="order_category">
+                        <label for="comments">Комментарии к заказу</label>
+                        <textarea id="comments" name="comments" form="order_form"></textarea>
+                    </div>
+                </div>
+
+                <form class="order_form" id="order_form" action="https://httpbin.org/post" method="post" enctype="multipart/form-data">
+                    <h3>Ваши данные</h3>
+                    
+                    <div class="order_form_row">
+                        <label for="fio">Имя</label>
+                        <input id="fio" name="fio" type="text" placeholder="Иван Иванов" >
+                    </div>
+
+                    <div class="order_form_row">
+                        <label for="email">Email</label>
+                        <input id="email" name="email" type="email" placeholder="name@example.com" >
+                    </div>
+                    
+                    <div class="order_form_row">
+                        <label><input id="consent" name="consent" type="checkbox" >Получать информацию о скидках и акциях</label>
+                    </div>
+
+                    <div class="order_form_row">
+                        <label for="tel">Телефон</label>
+                        <input id="tel" name="tel" type="tel" placeholder="+7 (800) 555-35-35" >
+                    </div>
+
+                    <div class="order_form_row">
+                        <label for="addr">Адрес</label>
+                        <input id="addr" name="addr" type="text" placeholder="Г. Москва, пр. Мира, 1189А, кв. 9991" >
+                        <label class="small_label">Доставка осуществляется только по Москве</label>
+                    </div>
+
+                    <fieldset class="form_row">
+                        <legend>Время доставки</legend>
+                        <label><input type="radio" name="source" value="internet" >Как можно быстрее</label>
+                        <label><input type="radio" name="source" value="friend">К указанному времени</label>
+                    </fieldset>
+
+                    <div class="form_row">
+                        <label for="form_deltime">Укажите время доставки</label>
+                        <input id="form_deltime" name="form_deltime" type="time" min="07:00" max="23:00" >
+                        <label class="small_label">Доставка осуществляется c 07:00 до 23:00</label>
+                    </div>
+
+                    <div class="form_actions">
+                        <button type="reset" class="btn btn_secondary">Сбросить</button>
+                        <button type="submit" class="btn btn_primary">Отправить</button>
+                    </div>
+
+                    <input type="hidden" name="soup" id="input-soup">
+                    <input type="hidden" name="main" id="input-main">
+                    <input type="hidden" name="salad/starter" id="input-salad/starter">
+                    <input type="hidden" name="drink" id="input-drink">
+                    <input type="hidden" name="dessert" id="input-dessert">
+                </form>
+            </div>
+
+
+
+        </div>
+    </section>
+
+</main>
+
+<footer id="footer">
+    Позвонить нам +78005553535
+</footer>
+
+<script src="indexOrder.js"> </script>
+
+</body>
+</html>

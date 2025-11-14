@@ -25,52 +25,36 @@ async function loadDishes() {
 }
 loadDishes();
 
-function renderFilters(){
-    categories.forEach(category => {
-        const section = document.querySelector(`[data-category="${category}"]`);
-        section.innerHTML = "";
+function renderMenu() {
+    const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
+    if(Object.keys(selectedDishes).length === 0){
+        console.log("1")
+        document.querySelector('.container_dish').innerHTML = 
+            'Ничего не выбрано. Чтобы добавить блюда в заказ, перейдите на страницу <a href="lunch.html">Собрать ланч</a>.';
+    }
 
-        const filterBlock = document.createElement("div");
-        filterBlock.classList.add("filters");
-        filtersByCategory[category].forEach(f => {
-            const btn = document.createElement("button");
-            btn.classList.add("filter_btn");
-            btn.textContent = f.name;
-            btn.dataset.kind = f.kind;
-            btn.addEventListener("click", () => toggleFilter(category, f.kind, btn));
-            filterBlock.appendChild(btn);
-        });
-        section.parentElement.insertBefore(filterBlock, section);
-    })
-}
-renderFilters();
+    orderDisplay();
+    return
 
-function renderMenu(cat, filt) {
-    categories.forEach(category => {
-        if(cat && category !== cat) return;
-        const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
-        if(!cat && !filt && Object.keys(selectedDishes).length !== 0) orderDisplay();
+    const section = document.querySelector(`[data-category="${category}"]`);
+    section.innerHTML = "";
 
-        const section = document.querySelector(`[data-category="${category}"]`);
-        section.innerHTML = "";
+    const filtered = window.dishes.filter(d => d.category.replace("-", "") === category && (!filt || d.kind === filt)).sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 
-        const filtered = window.dishes.filter(d => d.category.replace("-", "") === category && (!filt || d.kind === filt)).sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-
-        filtered.forEach(dish => {
-            const card = document.createElement("div");
-            card.classList.add("dish");
-            if(selectedDishes[category] === dish.id) card.classList.add("active");
-            card.setAttribute("data-keyword", dish.keyword);
-            card.innerHTML = `
-                <img src="${dish.image}" alt="${dish.name}" class="img_dish">
-                <p class="dish_price">${dish.price}₽</p>
-                <p class="dish_name">${dish.name}</p>
-                <p class="dish_volume">${dish.count}</p>
-                <button class="dish_button">Добавить</button>
-            `;
-            section.appendChild(card);
-        });
-    })
+    filtered.forEach(dish => {
+        const card = document.createElement("div");
+        card.classList.add("dish");
+        if(selectedDishes[category] === dish.id) card.classList.add("active");
+        card.setAttribute("data-keyword", dish.keyword);
+        card.innerHTML = `
+            <img src="${dish.image}" alt="${dish.name}" class="img_dish">
+            <p class="dish_price">${dish.price}₽</p>
+            <p class="dish_name">${dish.name}</p>
+            <p class="dish_volume">${dish.count}</p>
+            <button class="dish_button">Добавить</button>
+        `;
+        section.appendChild(card);
+    });
 }
 
 document.body.addEventListener("click", e => {
