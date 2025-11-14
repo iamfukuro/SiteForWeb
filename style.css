@@ -390,6 +390,9 @@ td:first-child {
     display: none
 }
 
+#order_compound :is(p,a){
+    padding: 0 2%;
+}
 
 /* FOOTER */
 footer {

@@ -29,12 +29,16 @@ function renderMenu() {
     const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
     if(Object.keys(selectedDishes).length === 0){
         console.log("1")
-        document.querySelector('.container_dish').innerHTML = 
-            'Ничего не выбрано. Чтобы добавить блюда в заказ, перейдите на страницу <a href="lunch.html">Собрать ланч</a>.';
+        const section = document.getElementById('order_compound'),
+        paragraph = document.createElement('p');
+        paragraph.textContent = 'Ничего не выбрано. Чтобы добавить блюда в заказ, перейдите на страницу';
+        const link = document.createElement('a');
+        link.href = 'lunch.html';
+        link.textContent = "Собрать ланч"
+        
+        section.append(paragraph,link);
+        return
     }
-
-    orderDisplay();
-    return
 
     const section = document.querySelector(`[data-category="${category}"]`);
     section.innerHTML = "";
