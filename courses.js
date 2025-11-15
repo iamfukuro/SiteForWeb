@@ -1,3 +1,13 @@
+const categories = ["soup", "maincourse", "salad", "drink", "dessert",];
+
+const activeFilters = {
+  soup: null,
+  main_course: null,
+  drink: null,
+  dessert: null,
+  salad: null
+};
+
 const filtersByCategory = {
   soup: [
     { name: "Рыбный", kind: "fish" },

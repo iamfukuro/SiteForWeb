@@ -354,6 +354,7 @@ td:first-child {
     cursor: pointer;
 }
 
+
 .dish.active{
     border: 2px solid tomato;
 }
@@ -386,10 +387,43 @@ td:first-child {
     margin: 0
 }
 
-.order_category.disable{
+.disable{
     display: none
 }
 
+#order_compound :is(p,a){
+    padding: 0 2%
+}
+
+/* DO_ORDER */
+#do_order h2{
+    padding: 0 2%;
+}
+
+.container_do_order{
+    display: flex;
+    flex-direction: column; 
+    padding: 0 2%;
+    justify-content: center;
+    align-items: center;
+}
+
+.do_order_btn {
+    padding: 8px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 20px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.do_order_btn:hover {
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+    transform: translateY(-1px);
+}
 
 /* FOOTER */
 footer {
