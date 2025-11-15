@@ -14,7 +14,7 @@ let selectedDishes = {};
 
 async function loadDishes() {
     const dishes = JSON.parse(localStorage.getItem('selectedDishes') || '{}');
-    if(Object.keys(dishes).length === 0) return
+    if(Object.keys(dishes).length === 0) return renderMenu();
 
     for(const key in dishes){
         try {
@@ -44,8 +44,9 @@ function renderMenu() {
         paragraph.textContent = 'Ничего не выбрано. Чтобы добавить блюда в заказ, перейдите на страницу';
         const link = document.createElement('a');
         link.href = 'lunch.html';
-        link.textContent = "Собрать ланч"
+        link.textContent = "Собрать ланч";
         
+        section.innerHTML = "";
         section.append(paragraph,link);
         return;
     }
@@ -98,14 +99,21 @@ function getPrices(){
 function orderDisplay(){
     const section = document.getElementById(`order_summary`);
 
-    section.querySelectorAll('.disable').forEach(element => {
-        element.classList.remove('disable');
-    });
+    if(Object.keys(selectedDishes).length === 0 && !section.classList.contains('disable')){
+        section.querySelectorAll('.order_category').forEach(element => {
+            element.classList.add('disable');
+        });
 
-    const h3 = section.querySelector('h3').textContent = 'Ваш заказ';
+        section.querySelector('h3').textContent = 'Ничего не выбрано';
+    } else {
+        section.querySelectorAll('.disable').forEach(element => {
+            element.classList.remove('disable');
+        });
+
+        section.querySelector('h3').textContent = 'Ваш заказ';
+    }
     
     if(Object.keys(selectedDishes).length === 0) return
-    console.log(selectedDishes)
     for(const key in selectedDishes){
         dishInfo = Object.values(selectedDishes).find(d => d.id == selectedDishes[key].id);
         document.getElementById(`order_${dishInfo.category.replace("-", "")}`).textContent = `${dishInfo.name} ${dishInfo.price}₽`;
@@ -194,7 +202,7 @@ document.getElementById("order_form").addEventListener("submit", async (e) => {
     delivery_type = form.source.value === "now" ? "now" : "by_time",
     delivery_time = delivery_type === "by_time" ? form.form_deltime.value : null,
 
-    comment = "", // Если появится поле комментария, подставим сюда
+    comment = form.comments.value.trim()??"", // Если появится поле комментария, подставим сюда
 
     // 3) Собираем ID выбранных блюд
     soup_id = selectedDishes.soup?.id || null,
@@ -241,7 +249,8 @@ document.getElementById("order_form").addEventListener("submit", async (e) => {
             return createNotification("Ошибка сервера: " + (result.error || response.status));
         }
 
-        localStorage.removeItem("selectedDishes");
+        localStorage.setItem('selectedDishes', JSON.stringify({}));
+        selectedDishes = {};
 
         createNotification("Заказ успешно оформлен! Номер заказа: " + result.id);
         
