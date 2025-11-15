@@ -73,63 +73,22 @@ function renderMenu(cat, filt) {
     })
 }
 
-document.body.addEventListener("click", e => {
-    if(e.target.classList.contains("dish_button")) {
-        const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
-        if(Object.keys(selectedDishes).length !== 0) orderDisplay();
-
-        const category = e.target.parentElement.parentElement.getAttribute("data-category").replace("-", ""),
-        dish = e.target.parentElement.getAttribute("data-keyword"),
-
-        dishInfo = window.dishes.filter(d => d.keyword == dish)[0],
-        dishNowInfo = window.dishes.filter(d => d.id == selectedDishes[category])[0];
-
-        if(dishNowInfo?.id === dishInfo.id) return;
-
-        if(selectedDishes[category]){
-            const dishElement = document.querySelector(`[data-keyword="${dishNowInfo.keyword}"]`);
-            if(dishElement) dishElement.classList.remove("active");
-        }
-
-        const newDishElement = document.querySelector(`[data-keyword="${dish}"]`);
-        newDishElement.classList.add("active");
-
-        saveSelectedDish(category,dishInfo.id);
-
-        document.getElementById(`order_${category}`).textContent = `${dishInfo.name} ${dishInfo.price}₽`;
-        document.getElementById(`order_total`).textContent = `${getPrices()}₽`;
-    }
-});
-
 function getPrices(){
     let prices = 0;
     const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
     
     window.dishes.forEach(element => {
-        if(element.id === selectedDishes[element.category]) prices += element.price
+        if(element.id === selectedDishes[element.category.replace("-","")]) prices += element.price
     });
     
     return prices;
 }
 
 function orderDisplay(){
-    const section = document.getElementById(`order_summary`);
+    const section = document.getElementById(`do_order`);
 
-    section.querySelectorAll('.disable').forEach(element => {
-        element.classList.remove('disable');
-    });
-
-    const h3 = section.querySelector('h3').textContent = 'Ваш заказ';
-    
-    const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
-    if(Object.keys(selectedDishes).length === 0) return
-    
-    for(const key in selectedDishes){
-        dishInfo = window.dishes.filter(d => d.id == selectedDishes[key])[0];
-        document.getElementById(`order_${dishInfo.category.replace("-", "")}`).textContent = `${dishInfo.name} ${dishInfo.price}₽`;
-    };
-
-    document.getElementById(`order_total`).textContent = `${getPrices()}₽`;
+    section.classList.remove('disable');
+    section.querySelector('p').textContent = `Стоимость заказа: ${getPrices()}₽`;
 }
 
 function toggleFilter(category,filter,btn){
@@ -146,7 +105,7 @@ function toggleFilter(category,filter,btn){
 }
 
 function checkCombos() {
-  const s = selected;
+  const s = JSON.parse(localStorage.getItem('selectedDishes'));;
 
   const MESSAGES = {
     NOTHING: 'Ничего не выбрано. Выберите блюда для заказа',
@@ -205,15 +164,38 @@ function createNotification(message) {
   document.body.appendChild(overlay);
 }
 
-document.querySelector(".order_form").addEventListener("submit", e => {
-    const msg = checkCombos();
-    if (msg) {
-        e.preventDefault();
-        createNotification(msg);
-    };
-    document.querySelector('[name="soup"]').value = selected.soup || "";
-    document.querySelector('[name="main"]').value = selected.maincourse || "";
-    document.querySelector('[name="salad/starter"]').value = selected.salad || "";
-    document.querySelector('[name="drink"]').value = selected.drink || "";
-    document.querySelector('[name="dessert"]').value = selected.dessert || "";
-})
+document.body.addEventListener("click", e => {
+    if(e.target.classList.contains("dish_button")) {
+        const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
+        if(Object.keys(selectedDishes).length === 0) orderDisplay();
+
+        const category = e.target.parentElement.parentElement.getAttribute("data-category").replace("-", ""),
+        dish = e.target.parentElement.getAttribute("data-keyword"),
+
+        dishInfo = window.dishes.filter(d => d.keyword == dish)[0],
+        dishNowInfo = window.dishes.filter(d => d.id == selectedDishes[category])[0];
+
+        if(dishNowInfo?.id === dishInfo.id) return;
+
+        if(selectedDishes[category]){
+            const dishElement = document.querySelector(`[data-keyword="${dishNowInfo.keyword}"]`);
+            if(dishElement) dishElement.classList.remove("active");
+        }
+
+        const newDishElement = document.querySelector(`[data-keyword="${dish}"]`);
+        newDishElement.classList.add("active");
+
+        saveSelectedDish(category,dishInfo.id);
+
+        document.getElementById(`order_total`).textContent = `Стоимость заказа: ${getPrices()}₽`;
+    }
+    else if(e.target.classList.contains("do_order_btn")){
+        const msg = checkCombos();
+        if (msg) {
+            e.preventDefault();
+            createNotification(msg);
+        } else{
+            window.location.href = "order.html";
+        }
+    }
+});

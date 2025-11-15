@@ -94,7 +94,7 @@ function getPrices(){
     const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
     
     window.dishes.forEach(element => {
-        if(element.id === selectedDishes[element.category]) prices += element.price
+        if(element.id === selectedDishes[element.category.replace("-","")]) prices += element.price
     });
     
     return prices;
@@ -134,7 +134,7 @@ function toggleFilter(category,filter,btn){
 }
 
 function checkCombos() {
-  const s = selected;
+  const s = JSON.parse(localStorage.getItem('selectedDishes'));;
 
   const MESSAGES = {
     NOTHING: 'Ничего не выбрано. Выберите блюда для заказа',
