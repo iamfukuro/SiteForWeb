@@ -10,30 +10,34 @@ function saveSelectedDish(category, dishId) {
     localStorage.setItem('selectedDishes', JSON.stringify(saved));
 };
 
+let selectedDishes = {};
+
 async function loadDishes() {
-    try {
-        const response = await fetch('https://edu.std-900.ist.mospolytech.ru/labs/api/dishes', {
-            cache: 'no-store'
-        });
+    const dishes = JSON.parse(localStorage.getItem('selectedDishes') || '{}');
+    if(Object.keys(dishes).length === 0) return
 
-        if (!response.ok) {
-            throw new Error(`HTTP error: ${response.status}`);
+    for(const key in dishes){
+        try {
+            const response = await fetch(`https://edu.std-900.ist.mospolytech.ru/labs/api/dishes/${dishes[key]}?api_key=94543198-fd4a-4fb1-93be-52cbeaa95ca2`, {
+                cache: 'no-store'
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+
+            selectedDishes[key] = await response.json();
         }
-
-        const data = await response.json();
-
-        window.dishes = data;
-        renderMenu();
-
-    } catch (err) {
-        console.error("Ошибка загрузки блюд:", err);
+        catch (err){
+            console.error("Ошибка загрузки блюд:", err);
+        }
     }
+
+    renderMenu();
 }
 loadDishes();
 
 function renderMenu() {
-    const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
-    
     if(Object.keys(selectedDishes).length === 0){
         const section = document.getElementById('order_compound'),
         paragraph = document.createElement('p');
@@ -49,16 +53,9 @@ function renderMenu() {
     const section = document.querySelector(`.container_dish`);
     section.innerHTML = "";
 
-    const dishesId = [];
     for(const key in selectedDishes){
-        dishesId.push(selectedDishes[key])
-    }
-
-    const filtered = window.dishes.filter(d => dishesId.includes(d.id))
-    .sort((a,b) => categories.indexOf(a.category.replace("-", "")) > categories.indexOf(b.category.replace("-", "")));
-
-    filtered.forEach(dish => {
-        const card = document.createElement("div");
+        const dish = selectedDishes[key],
+        card = document.createElement("div");
         card.classList.add("dish");
         card.setAttribute("data-keyword", dish.keyword);
         card.setAttribute("data-category", dish.category.replace("-", ""));
@@ -70,16 +67,15 @@ function renderMenu() {
             <button class="dish_button remove">Удалить</button>
         `;
         section.appendChild(card);
-    });
+    };
 
     orderDisplay();
 }
 
 document.body.addEventListener("click", e => {
     if(e.target.classList.contains("remove")) {
-        const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes')),
-        category = e.target.parentElement.getAttribute("data-category").replace("-", ""),
-        dishInfo = window.dishes.filter(d => d.id == selectedDishes[category])[0];
+        const category = e.target.parentElement.getAttribute("data-category").replace("-", ""),
+        dishInfo = Object.values(selectedDishes).find(d => d.id === selectedDishes[category]);
         saveSelectedDish(category,null);
         document.querySelector(`[data-keyword="${dishInfo.keyword}"]`)?.remove();
 
@@ -91,11 +87,10 @@ document.body.addEventListener("click", e => {
 
 function getPrices(){
     let prices = 0;
-    const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
     
-    window.dishes.forEach(element => {
-        if(element.id === selectedDishes[element.category.replace("-","")]) prices += element.price
-    });
+    for(const key in selectedDishes){
+        prices += selectedDishes[key].price
+    }
     
     return prices;
 }
@@ -109,32 +104,18 @@ function orderDisplay(){
 
     const h3 = section.querySelector('h3').textContent = 'Ваш заказ';
     
-    const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
     if(Object.keys(selectedDishes).length === 0) return
-    
+    console.log(selectedDishes)
     for(const key in selectedDishes){
-        dishInfo = window.dishes.filter(d => d.id == selectedDishes[key])[0];
+        dishInfo = Object.values(selectedDishes).find(d => d.id == selectedDishes[key].id);
         document.getElementById(`order_${dishInfo.category.replace("-", "")}`).textContent = `${dishInfo.name} ${dishInfo.price}₽`;
     };
 
     document.getElementById(`order_total`).textContent = `${getPrices()}₽`;
 }
 
-function toggleFilter(category,filter,btn){
-    if(activeFilters[category] === filter){
-        btn.classList.remove("active");
-        activeFilters[category] = null;
-        return renderMenu(category);
-    };
-
-    if(activeFilters[category]) btn.parentElement.querySelector(`[data-kind="${activeFilters[category]}"]`).classList.remove("active");
-    activeFilters[category] = filter;
-    btn.classList.add("active");
-    renderMenu(category, filter);
-}
-
 function checkCombos() {
-  const s = JSON.parse(localStorage.getItem('selectedDishes'));;
+  const s = selectedDishes;
 
   const MESSAGES = {
     NOTHING: 'Ничего не выбрано. Выберите блюда для заказа',
@@ -193,15 +174,82 @@ function createNotification(message) {
   document.body.appendChild(overlay);
 }
 
-document.querySelector(".order_form").addEventListener("submit", e => {
+document.getElementById("order_form").addEventListener("submit", async (e) => {
+    e.preventDefault(); // отменяем стандартную отправку
+
+    // 1) Проверка комбо
     const msg = checkCombos();
     if (msg) {
-        e.preventDefault();
-        createNotification(msg);
+        return createNotification(msg);
+    }
+
+    // 2) Собираем значения формы
+    const form = e.target,
+
+    full_name = form.fio.value.trim(),
+    email = form.email.value.trim(),
+    phone = form.tel.value.trim(),
+    delivery_address = form.addr.value.trim(),
+
+    delivery_type = form.source.value === "now" ? "now" : "by_time",
+    delivery_time = delivery_type === "by_time" ? form.form_deltime.value : null,
+
+    comment = "", // Если появится поле комментария, подставим сюда
+
+    // 3) Собираем ID выбранных блюд
+    soup_id = selectedDishes.soup?.id || null,
+    main_course_id = selectedDishes.maincourse?.id || null,
+    salad_id = selectedDishes.salad?.id || null,
+    drink_id = selectedDishes.drink?.id || null,
+    dessert_id = selectedDishes.dessert?.id || null,
+
+    // 4) Готовим JSON
+    body = {
+        full_name,
+        email,
+        phone,
+        delivery_address,
+        delivery_type,
+        delivery_time,
+        comment,
+
+        soup_id,
+        main_course_id,
+        salad_id,
+        drink_id,
+        dessert_id
     };
-    document.querySelector('[name="soup"]').value = selected.soup || "";
-    document.querySelector('[name="main"]').value = selected.maincourse || "";
-    document.querySelector('[name="salad/starter"]').value = selected.salad || "";
-    document.querySelector('[name="drink"]').value = selected.drink || "";
-    document.querySelector('[name="dessert"]').value = selected.dessert || "";
-})
+
+    console.log("Отправляем заказ:", body);
+
+    try {
+        const response = await fetch(
+            "https://edu.std-900.ist.mospolytech.ru/labs/api/orders?api_key=94543198-fd4a-4fb1-93be-52cbeaa95ca2",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            console.error("Ошибка сервера:", result);
+            return createNotification("Ошибка сервера: " + (result.error || response.status));
+        }
+
+        localStorage.removeItem("selectedDishes");
+
+        createNotification("Заказ успешно оформлен! Номер заказа: " + result.id);
+        
+        renderMenu();
+        orderDisplay();
+        
+    } catch (err) {
+        console.error("Ошибка сети:", err);
+        createNotification("Ошибка сети. Попробуйте позже.");
+    }
+});

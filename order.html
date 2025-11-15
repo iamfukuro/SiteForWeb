@@ -72,43 +72,43 @@
                     </div>
                 </div>
 
-                <form class="order_form" id="order_form" action="https://httpbin.org/post" method="post" enctype="multipart/form-data">
+                <form class="order_form" id="order_form">
                     <h3>Ваши данные</h3>
                     
                     <div class="order_form_row">
                         <label for="fio">Имя</label>
-                        <input id="fio" name="fio" type="text" placeholder="Иван Иванов" >
+                        <input id="fio" name="fio" type="text" placeholder="Иван Иванов" required>
                     </div>
 
                     <div class="order_form_row">
                         <label for="email">Email</label>
-                        <input id="email" name="email" type="email" placeholder="name@example.com" >
+                        <input id="email" name="email" type="email" placeholder="name@example.com" required>
                     </div>
                     
                     <div class="order_form_row">
-                        <label><input id="consent" name="consent" type="checkbox" >Получать информацию о скидках и акциях</label>
+                        <label><input id="consent" name="consent" type="checkbox" required>Получать информацию о скидках и акциях</label>
                     </div>
 
                     <div class="order_form_row">
                         <label for="tel">Телефон</label>
-                        <input id="tel" name="tel" type="tel" placeholder="+7 (800) 555-35-35" >
+                        <input id="tel" name="tel" type="tel" placeholder="+7 (800) 555-35-35" required>
                     </div>
 
                     <div class="order_form_row">
                         <label for="addr">Адрес</label>
-                        <input id="addr" name="addr" type="text" placeholder="Г. Москва, пр. Мира, 1189А, кв. 9991" >
+                        <input id="addr" name="addr" type="text" placeholder="Г. Москва, пр. Мира, 1189А, кв. 9991" required>
                         <label class="small_label">Доставка осуществляется только по Москве</label>
                     </div>
 
                     <fieldset class="form_row">
                         <legend>Время доставки</legend>
-                        <label><input type="radio" name="source" value="internet" >Как можно быстрее</label>
-                        <label><input type="radio" name="source" value="friend">К указанному времени</label>
+                        <label><input type="radio" name="source" value="now" required>Как можно быстрее</label>
+                        <label><input type="radio" name="source" value="by_time">К указанному времени</label>
                     </fieldset>
 
                     <div class="form_row">
                         <label for="form_deltime">Укажите время доставки</label>
-                        <input id="form_deltime" name="form_deltime" type="time" min="07:00" max="23:00" >
+                        <input id="form_deltime" name="form_deltime" type="time" min="07:00" max="23:00" required>
                         <label class="small_label">Доставка осуществляется c 07:00 до 23:00</label>
                     </div>
 
@@ -116,12 +116,6 @@
                         <button type="reset" class="btn btn_secondary">Сбросить</button>
                         <button type="submit" class="btn btn_primary">Отправить</button>
                     </div>
-
-                    <input type="hidden" name="soup" id="input-soup">
-                    <input type="hidden" name="main" id="input-main">
-                    <input type="hidden" name="salad/starter" id="input-salad/starter">
-                    <input type="hidden" name="drink" id="input-drink">
-                    <input type="hidden" name="dessert" id="input-dessert">
                 </form>
             </div>
 
