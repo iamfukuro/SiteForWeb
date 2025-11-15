@@ -84,7 +84,7 @@ document.body.addEventListener("click", e => {
         dishInfo = window.dishes.filter(d => d.keyword == dish)[0],
         dishNowInfo = window.dishes.filter(d => d.id == selectedDishes[category])[0];
 
-        if(dishNowInfo.id === dishInfo.id) return;
+        if(dishNowInfo?.id === dishInfo.id) return;
 
         if(selectedDishes[category]){
             const dishElement = document.querySelector(`[data-keyword="${dishNowInfo.keyword}"]`);

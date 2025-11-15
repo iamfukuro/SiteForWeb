@@ -1,6 +1,12 @@
+const categories = ["soup", "maincourse", "salad", "drink", "dessert",];
+
 function saveSelectedDish(category, dishId) {
     const saved = JSON.parse(localStorage.getItem('selectedDishes') || '{}');
-    saved[category] = dishId;
+    if(dishId === null){
+        delete saved[category]
+    } else{
+        saved[category] = dishId;
+    }
     localStorage.setItem('selectedDishes', JSON.stringify(saved));
 };
 
@@ -27,8 +33,8 @@ loadDishes();
 
 function renderMenu() {
     const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
+    
     if(Object.keys(selectedDishes).length === 0){
-        console.log("1")
         const section = document.getElementById('order_compound'),
         paragraph = document.createElement('p');
         paragraph.textContent = 'Ничего не выбрано. Чтобы добавить блюда в заказ, перейдите на страницу';
@@ -37,55 +43,49 @@ function renderMenu() {
         link.textContent = "Собрать ланч"
         
         section.append(paragraph,link);
-        return
+        return;
     }
 
-    const section = document.querySelector(`[data-category="${category}"]`);
+    const section = document.querySelector(`.container_dish`);
     section.innerHTML = "";
 
-    const filtered = window.dishes.filter(d => d.category.replace("-", "") === category && (!filt || d.kind === filt)).sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+    const dishesId = [];
+    for(const key in selectedDishes){
+        dishesId.push(selectedDishes[key])
+    }
+
+    const filtered = window.dishes.filter(d => dishesId.includes(d.id))
+    .sort((a,b) => categories.indexOf(a.category.replace("-", "")) > categories.indexOf(b.category.replace("-", "")));
 
     filtered.forEach(dish => {
         const card = document.createElement("div");
         card.classList.add("dish");
-        if(selectedDishes[category] === dish.id) card.classList.add("active");
         card.setAttribute("data-keyword", dish.keyword);
+        card.setAttribute("data-category", dish.category.replace("-", ""));
         card.innerHTML = `
             <img src="${dish.image}" alt="${dish.name}" class="img_dish">
             <p class="dish_price">${dish.price}₽</p>
             <p class="dish_name">${dish.name}</p>
             <p class="dish_volume">${dish.count}</p>
-            <button class="dish_button">Добавить</button>
+            <button class="dish_button remove">Удалить</button>
         `;
         section.appendChild(card);
     });
+
+    orderDisplay();
 }
 
 document.body.addEventListener("click", e => {
-    if(e.target.classList.contains("dish_button")) {
-        const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
-        if(Object.keys(selectedDishes).length !== 0) orderDisplay();
+    if(e.target.classList.contains("remove")) {
+        const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes')),
+        category = e.target.parentElement.getAttribute("data-category").replace("-", ""),
+        dishInfo = window.dishes.filter(d => d.id == selectedDishes[category])[0];
+        saveSelectedDish(category,null);
+        document.querySelector(`[data-keyword="${dishInfo.keyword}"]`)?.remove();
 
-        const category = e.target.parentElement.parentElement.getAttribute("data-category").replace("-", ""),
-        dish = e.target.parentElement.getAttribute("data-keyword"),
-
-        dishInfo = window.dishes.filter(d => d.keyword == dish)[0],
-        dishNowInfo = window.dishes.filter(d => d.id == selectedDishes[category])[0];
-
-        if(dishNowInfo.id === dishInfo.id) return;
-
-        if(selectedDishes[category]){
-            const dishElement = document.querySelector(`[data-keyword="${dishNowInfo.keyword}"]`);
-            if(dishElement) dishElement.classList.remove("active");
-        }
-
-        const newDishElement = document.querySelector(`[data-keyword="${dish}"]`);
-        newDishElement.classList.add("active");
-
-        saveSelectedDish(category,dishInfo.id);
-
-        document.getElementById(`order_${category}`).textContent = `${dishInfo.name} ${dishInfo.price}₽`;
+        document.getElementById(`order_${category}`).textContent = `Не выбрано`;
         document.getElementById(`order_total`).textContent = `${getPrices()}₽`;
+        if(Object.keys(selectedDishes).length === 1) renderMenu();
     }
 });
 
