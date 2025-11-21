@@ -14,24 +14,14 @@ async function loadOrders() {
         }
         
         orders = await response.json();
+        orders = orders.reverse();
         await loadDishes();
     }
     catch (err){
         console.error("Ошибка загрузки блюд:", err);
+        alert(err)
     }
 }
-
-function saveSelectedDish(category, dishId) {
-    const saved = JSON.parse(localStorage.getItem("selectedDishes") || "{}");
-    if(dishId === null){
-        delete saved[category]
-    } else{
-        saved[category] = dishId;
-    }
-    localStorage.setItem("selectedDishes", JSON.stringify(saved));
-}
-
-let selectedDishes = {};
 
 async function loadDishes() {
     try {
@@ -47,6 +37,7 @@ async function loadDishes() {
         await additionOrders();
     } catch (err) {
         console.error("Ошибка загрузки блюд:", err);
+        alert("Ошибка загрузки блюд:", err);
     }
 }
 
@@ -96,37 +87,89 @@ async function additionOrders() {
 }
 
 async function renderOrders() { 
-    const orders_tbody = document.querySelector("#orders_tbody")
-    const template = document.querySelector("#order_info_template")
+    const orders_tbody = document.querySelector("#orders_tbody"),
+    template = document.querySelector("#order_info_template");
+
+    orders_tbody.innerHTML = ''
 
     orders.forEach((order) => {
         let item = template.content.cloneNode(true),
         date = new Date(order.created_at)
 
         item.querySelector(`[data-appointment="number"]`).textContent = (orders.indexOf(order) + 1)
-        item.querySelector(`[data-appointment="data"]`).textContent = `${date.toLocaleDateString("ru-RU")} ${date.toTimeString().slice(0, 5)}`
+        item.querySelector(`[data-appointment="date"]`).textContent = `${date.toLocaleDateString("ru-RU")} ${date.toTimeString().slice(0, 5)}`
         item.querySelector(`[data-appointment="compound"]`).textContent = order.text
         item.querySelector(`[data-appointment="price"]`).textContent = order.price
         item.querySelector(`[data-appointment="time"]`).textContent = order.delivery_type == "by_time" ? order.delivery_time.slice(0,5) : "Как можно скорее (с 7:00 до 23:00)"
-
+        
+        item.querySelector('.order_actions').setAttribute('data-order-id', order.id);
+        
         orders_tbody.append(item)
     });
 }
 
+async function deleteOrder(orderId) {
+    try {
+        const response = await fetch(`https://edu.std-900.ist.mospolytech.ru/labs/api/orders/${orderId}?api_key=94543198-fd4a-4fb1-93be-52cbeaa95ca2`, {
+            method: "DELETE"
+        });
+
+        if (!response.ok) {
+            console.error("Ошибка сервера при удалении");
+            return;
+        }
+    } catch (err) {
+        console.error("Ошибка удаления:", err);
+        alert("Ошибка удаления:", err);
+    }
+}
+
+async function saveEditedOrder(orderId, wrapper) {
+    const body = {
+        full_name: wrapper.querySelector("[data-name]").value.trim(),
+        delivery_address: wrapper.querySelector("[data-address]").value.trim(),
+        phone: wrapper.querySelector("[data-phone]").value.trim(),
+        email: wrapper.querySelector("[data-email]").value.trim(),
+        comment: wrapper.querySelector("[data-comment]").value.trim(),
+
+        delivery_type: wrapper.querySelector(`[name="delivery_type"]:checked`).value,
+        delivery_time: wrapper.querySelector("[data-time]").value || null
+    };
+
+    try {
+        const response = await fetch(
+            `https://edu.std-900.ist.mospolytech.ru/labs/api/orders/${orderId}?api_key=94543198-fd4a-4fb1-93be-52cbeaa95ca2`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            console.error("Ошибка сервера:", result);
+            return;
+        }
+
+    } catch (err) {
+        console.error("Ошибка сети:", err);
+        alert("Ошибка сети:", err);
+    }
+}
+
 document.body.addEventListener("click", e => {
     const btn = e.target.closest(".view, .edit, .delete");
-    btn && createModal(btn.className.match(/view|edit|delete/)[0]);
-});
+    if (!btn) return;
 
-function getPrices(){
-    let prices = 0;
-    
-    for(const key in selectedDishes){
-        prices += selectedDishes[key].price
-    }
-    
-    return prices;
-}
+    const type = btn.className.match(/view|edit|delete/)[0],
+    orderId = btn.closest('[data-order-id]').dataset.orderId;
+
+    createModal(type,Number(orderId));
+});
 
 function handleTabKey(e) {
     if (e.key === "Tab") {
@@ -134,146 +177,130 @@ function handleTabKey(e) {
     }
 }
 
-function renderModal(type){
-    console.log(type)
-}
-
-function createModal(type) {
-
-    const existing = document.getElementById("order_notification_overlay");
+function createModal(type, orderId) {
+    const existing = document.querySelector(".order_modal_wrapper, #order_notification_overlay");
     if (existing) existing.remove();
 
-    document.body.style.overflow = "hidden"; 
+    document.body.style.overflow = "hidden";
     document.addEventListener("keydown", handleTabKey);
-    
-    const overlay = document.createElement("div");
-    overlay.id = "order_notification_overlay";
-    overlay.setAttribute("role", "dialog");
-    overlay.setAttribute("aria-modal", "true");
 
-    renderModal(type);
-
-    const card = document.createElement("div");
-    card.className = "order_notification_card";
-
-    const text = document.createElement("div");
-    text.className = "order_notification_text";
-    text.textContent = type;
-
-    const btn = document.createElement("button");
-    btn.className = "order_notification_ok";
-    btn.type = "button";
-    btn.textContent = "Окей";
-
-    btn.addEventListener("click", () => {
-        overlay.remove();
-        document.body.style.overflow = ""; 
-        document.removeEventListener("keydown", handleTabKey);
-    });
-
-    card.appendChild(text);
-    card.appendChild(btn);
-    overlay.appendChild(card);
-    document.body.appendChild(overlay);
+    if (type === "view") {
+        renderViewModal(orderId);
+    }
+    else if (type === "edit") {
+        renderEditModal(orderId);
+    }
+    else if (type === "delete") {
+        renderDeleteModal(orderId);
+    }
 }
 
-// document.getElementById("order_form").addEventListener("submit", async (e) => {
-//     e.preventDefault(); // отменяем стандартную отправку
+function renderViewModal(orderId) {
+    const order = orders.find((ord) => ord.id === orderId),
+    date = new Date(order.created_at),
 
-//     // 1) Проверка комбо
-//     const msg = checkCombos();
-//     if (msg) {
-//         return createModal(msg);
-//     }
+    template = document.getElementById("order_modal_view"),
+    modal = template.content.cloneNode(true),
 
-//     // 2) Собираем значения формы
-//     const form = e.target,
+    wrapper = modal.querySelector(".order_modal_wrapper");
 
-//     full_name = form.fio.value.trim(),
-//     email = form.email.value.trim(),
-//     phone = form.tel.value.trim(),
-//     delivery_address = form.addr.value.trim(),
+    wrapper.querySelector("[data-date]").textContent = `${date.toLocaleDateString("ru-RU")} ${date.toTimeString().slice(0, 5)}`;
+    wrapper.querySelector("[data-name]").textContent = order.full_name;
+    wrapper.querySelector("[data-address]").textContent = order.delivery_address;
+    wrapper.querySelector("[data-time]").textContent = order.delivery_type == "by_time" ? order.delivery_time.slice(0,5) : "Как можно скорее"
+    wrapper.querySelector("[data-phone]").textContent = order.phone;
+    wrapper.querySelector("[data-email]").textContent = order.email;
+    wrapper.querySelector("[data-comment]").textContent = order.comment??"";
 
-//     delivery_type = form.source.value === "now" ? "now" : "by_time",
-//     delivery_time = delivery_type === "by_time" ? form.form_deltime.value : null,
+    wrapper.querySelector("[data-soup]").textContent = order.soup?.name??"Не выбран";
+    wrapper.querySelector("[data-main]").textContent = order.main_course?.name??"Не выбрано";
+    wrapper.querySelector("[data-salad]").textContent = order.salad?.name??"Не выбран";
+    wrapper.querySelector("[data-drink]").textContent = order.drink?.name??"Не выбран";
+    wrapper.querySelector("[data-dessert]").textContent = order.dessert?.name??"Не выбран";
 
-//     comment = form.comments.value.trim()??"", // Если появится поле комментария, подставим сюда
+    wrapper.querySelector("[data-price]").textContent = order.price;
 
-//     // 3) Собираем ID выбранных блюд
-//     soup_id = selectedDishes.soup?.id || null,
-//     main_course_id = selectedDishes.maincourse?.id || null,
-//     salad_id = selectedDishes.salad?.id || null,
-//     drink_id = selectedDishes.drink?.id || null,
-//     dessert_id = selectedDishes.dessert?.id || null,
+    // КНОПКИ ЗАКРЫТИЯ
+    wrapper.querySelector(".order_modal_close").addEventListener("click", closeModal);
+    wrapper.querySelector(".order_modal_ok").addEventListener("click", closeModal);
 
-//     // 4) Готовим JSON
-//     body = {
-//         full_name,
-//         email,
-//         phone,
-//         delivery_address,
-//         delivery_type,
-//         delivery_time,
-//         comment,
+    document.body.appendChild(modal);
+}
 
-//         soup_id,
-//         main_course_id,
-//         salad_id,
-//         drink_id,
-//         dessert_id
-//     };
+function renderEditModal(orderId) {
+    const order = orders.find(o => o.id === orderId),
+    date = new Date(order.created_at),
 
-//     console.log("Отправляем заказ:", body);
+    template = document.getElementById("order_modal_edit"),
+    modal = template.content.cloneNode(true),
 
-//     try {
-//         const response = await fetch(
-//             "https://edu.std-900.ist.mospolytech.ru/labs/api/orders?api_key=94543198-fd4a-4fb1-93be-52cbeaa95ca2",
-//             {
-//                 method: "POST",
-//                 headers: {
-//                     "Content-Type": "application/json"
-//                 },
-//                 body: JSON.stringify(body)
-//             }
-//         );
+    wrapper = modal.querySelector(".order_modal_wrapper");
 
-//         const result = await response.json();
+    wrapper.querySelector("[data-date]").textContent = `${date.toLocaleDateString("ru-RU")} ${date.toTimeString().slice(0,5)}`;
 
-//         if (!response.ok) {
-//             console.error("Ошибка сервера:", result);
-//             return createModal("Ошибка сервера: " + (result.error || response.status));
-//         }
+    wrapper.querySelector("[data-name]").value = order.full_name;
+    wrapper.querySelector("[data-address]").value = order.delivery_address;
+    wrapper.querySelector("[data-phone]").value = order.phone;
+    wrapper.querySelector("[data-email]").value = order.email;
+    wrapper.querySelector("[data-comment]").value = order.comment??"";
 
-//         localStorage.setItem("selectedDishes", JSON.stringify({}));
-//         selectedDishes = {};
+    wrapper.querySelector(`[name="delivery_type"][value="${order.delivery_type}"]`).checked = true;
 
-//         createModal("Заказ успешно оформлен! Номер заказа: " + result.id);
-        
-//         renderMenu();
-//         orderDisplay();
-        
-//     } catch (err) {
-//         console.error("Ошибка сети:", err);
-//         createModal("Ошибка сети. Попробуйте позже.");
-//     }
-// });
+    if (order.delivery_type === "by_time") {
+        wrapper.querySelector("[data-time]").value = order.delivery_time.slice(0,5);
+    }
+
+    wrapper.querySelector(".order_modal_close").addEventListener("click", closeModal);
+    wrapper.querySelector(".order_modal_cancel").addEventListener("click", closeModal);
+
+    wrapper.querySelector(".order_modal_save").addEventListener("click", async () => {
+        await saveEditedOrder(orderId, wrapper);
+        closeModal();
+        await loadOrders();
+        renderOrders();
+        alert(`Заказ ${orderId} обновлён`);
+    });
+
+    document.body.appendChild(modal);
+}
+
+async function renderDeleteModal(orderId) {
+    const order = orders.find(o => o.id === orderId);
+    const date = new Date(order.created_at);
+
+    const template = document.getElementById("order_modal_delete");
+    const modal = template.content.cloneNode(true);
+
+    const wrapper = modal.querySelector(".order_modal_wrapper");
+
+    wrapper.querySelector("[data-order-id]").textContent = orderId;
+    wrapper.querySelector("[data-date]").textContent = `${date.toLocaleDateString("ru-RU")} ${date.toTimeString().slice(0,5)}`;
+
+
+    wrapper.querySelector(".order_modal_close").addEventListener("click", closeModal);
+    wrapper.querySelector(".order_modal_cancel").addEventListener("click", closeModal);
+
+    wrapper.querySelector(".order_modal_delete_btn").addEventListener("click", async () => {
+        await deleteOrder(orderId);
+        closeModal();
+        await loadOrders();
+        renderOrders();
+        alert(`Удалён заказ #${orderId}`);
+    });
+
+    document.body.appendChild(modal);
+}
+
+function closeModal() {
+    const modal = document.querySelector(".order_modal_wrapper");
+    if (modal) modal.remove();
+
+    document.body.style.overflow = "";
+    document.removeEventListener("keydown", handleTabKey);
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
     await loadOrders();
     renderOrders();
-
-
-    // const orders = document.querySelector("#orders_tbody")
-    // const template = document.querySelector("#order_info_template")
-
-    // const item = template.content.cloneNode(true)
-
-    // item.querySelector(`[data-appointment="number"]`).textContent = "12"
-    // item.querySelector(`[data-appointment="data"]`).textContent = "12.02.23"
-    // item.querySelector(`[data-appointment="compound"]`).textContent = "АФыафцафцаафц фцаааааааа ацфааааааа"
-    // item.querySelector(`[data-appointment="price"]`).textContent = "121255"
-    // item.querySelector(`[data-appointment="time"]`).textContent = "21:00"
-
-    // orders.append(item)
 });
 
