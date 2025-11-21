@@ -213,6 +213,52 @@ td:first-child {
   border-color: #333;
 }
 
+/* ORDER_NOTIFICATION */
+#order_notification_overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 9999;
+}
+
+.order_notification_card {
+  max-width: 420px;
+  width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.order_notification_text {
+  font-size: 16px;
+  color: #111;
+  line-height: 1.3;
+}
+
+.order_notification_ok {
+  padding: 10px 18px;
+  border-radius: 100px;
+  border: 1px solid #e2d9c9;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.order_notification_ok:hover{
+  background-color: #333;
+  color: #fff;
+  transform: translateY(-2px) scale(1.02);
+  border-color: #333;
+}
 
 /* FORM */
 .form_container{
@@ -423,6 +469,49 @@ td:first-child {
     border-color: #ff6b6b;
     color: #ff6b6b;
     transform: translateY(-1px);
+}
+
+/* ORDERS */
+#orders_info{
+    padding: 2% 0;
+}
+
+.container_orders{
+    padding: 2%;
+}
+
+.orders_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size:14px;
+}
+
+.orders_table thead th{
+    border: none;
+    border-top: 1px solid #777;
+    border-bottom: 1px solid #777;
+}
+
+.orders_table tbody td{
+    border: none;
+    border-bottom: 1px solid #777;
+}
+
+.order_info_compound{
+    text-align: left;
+}
+
+.ot_th{
+    padding: 8px;
+}
+
+.order_btn{
+    background: none;
+    border: none;
+}
+
+.order_btn:hover{
+    cursor: pointer;
 }
 
 /* FOOTER */
