@@ -17,8 +17,6 @@ async function loadDishes() {
         }
 
         const data = await response.json();
-        console.log(`VSEPROHODIT`)
-        console.log(data)
 
         dishes = data;
         renderMenu();
@@ -52,7 +50,7 @@ renderFilters();
 function renderMenu(cat, filt) {
     categories.forEach(category => {
         if(cat && category !== cat) return;
-        const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
+        const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes') || {});
         if(!cat && !filt && Object.keys(selectedDishes).length !== 0) orderDisplay();
 
         const section = document.querySelector(`[data-category="${category}"]`);
@@ -79,7 +77,7 @@ function renderMenu(cat, filt) {
 
 function getPrices(){
     let prices = 0;
-    const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
+    const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes') || {});
     
     dishes.forEach(element => {
         if(element.id === selectedDishes[element.category.replace("-","")]) prices += element.price
@@ -170,7 +168,7 @@ function createNotification(message) {
 
 document.body.addEventListener("click", e => {
     if(e.target.classList.contains("dish_button")) {
-        const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
+        const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes') || {});
         if(Object.keys(selectedDishes).length === 0) orderDisplay();
 
         const category = e.target.parentElement.parentElement.getAttribute("data-category").replace("-", ""),
