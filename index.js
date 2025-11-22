@@ -4,6 +4,8 @@ function saveSelectedDish(category, dishId) {
     localStorage.setItem('selectedDishes', JSON.stringify(saved));
 };
 
+let dishes = []
+
 async function loadDishes() {
     try {
         const response = await fetch('https://edu.std-900.ist.mospolytech.ru/labs/api/dishes', {
