@@ -1,4 +1,4 @@
-const categories = ["soup", "maincourse", "salad", "drink", "dessert",];
+const categories = ["soup", "maincourse", "salad", "drink", "dessert"];
 
 const activeFilters = {
   soup: null,
