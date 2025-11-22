@@ -182,6 +182,34 @@ function createNotification(message) {
   document.body.appendChild(overlay);
 }
 
+function setMinTime(date){
+    let newDate = date
+    if(date.slice(-1) === "0" || date.slice(-1) === "5"){
+        return date
+    } else{
+        const minuts = Number(date.slice(-2))
+        if(0 < Number(date.slice(-1)) < 5){
+            newDate = `${newDate.slice(0,-1)}5`
+        } else{
+            newDate = `${newDate.slice(0,-2)}${minuts+(10-Number(newDate.slice(-1)))}`
+        }
+        return newDate
+    }
+}
+
+function setTime(date) {
+    const now = new Date();
+    now.setMinutes(Math.ceil(now.getMinutes() / 5) * 5);
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const currentTime = `${hours}:${minutes}`;
+    console.log(date)
+    console.log(currentTime)
+    if(date < currentTime) return currentTime;
+    return setMinTime(date)
+}
+    
+
 document.getElementById("order_form").addEventListener("submit", async (e) => {
     e.preventDefault(); // отменяем стандартную отправку
 
@@ -196,11 +224,12 @@ document.getElementById("order_form").addEventListener("submit", async (e) => {
 
     full_name = form.fio.value.trim(),
     email = form.email.value.trim(),
+    subscribe = form.consent.checked,
     phone = form.tel.value.trim(),
     delivery_address = form.addr.value.trim(),
 
     delivery_type = form.source.value === "now" ? "now" : "by_time",
-    delivery_time = delivery_type === "by_time" ? form.form_deltime.value : null,
+    delivery_time = delivery_type === setTime(form.form_deltime.value),
 
     comment = form.comments.value.trim()??"", // Если появится поле комментария, подставим сюда
 
@@ -215,6 +244,7 @@ document.getElementById("order_form").addEventListener("submit", async (e) => {
     body = {
         full_name,
         email,
+        subscribe,
         phone,
         delivery_address,
         delivery_type,
