@@ -152,6 +152,7 @@ async function saveEditedOrder(orderId, wrapper) {
 
         if (!response.ok) {
             console.error("Ошибка сервера:", result);
+            alert("Ошибка сервера:", result);
             return;
         }
 
