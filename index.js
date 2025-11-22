@@ -17,8 +17,10 @@ async function loadDishes() {
         }
 
         const data = await response.json();
+        console.log(`VSEPROHODIT`)
+        console.log(data)
 
-        window.dishes = data;
+        dishes = data;
         renderMenu();
 
     } catch (err) {
@@ -56,7 +58,7 @@ function renderMenu(cat, filt) {
         const section = document.querySelector(`[data-category="${category}"]`);
         section.innerHTML = "";
 
-        const filtered = window.dishes.filter(d => d.category.replace("-", "") === category && (!filt || d.kind === filt)).sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+        const filtered = dishes.filter(d => d.category.replace("-", "") === category && (!filt || d.kind === filt)).sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 
         filtered.forEach(dish => {
             const card = document.createElement("div");
@@ -79,7 +81,7 @@ function getPrices(){
     let prices = 0;
     const selectedDishes = JSON.parse(localStorage.getItem('selectedDishes'));
     
-    window.dishes.forEach(element => {
+    dishes.forEach(element => {
         if(element.id === selectedDishes[element.category.replace("-","")]) prices += element.price
     });
     
@@ -174,8 +176,8 @@ document.body.addEventListener("click", e => {
         const category = e.target.parentElement.parentElement.getAttribute("data-category").replace("-", ""),
         dish = e.target.parentElement.getAttribute("data-keyword"),
 
-        dishInfo = window.dishes.filter(d => d.keyword == dish)[0],
-        dishNowInfo = window.dishes.filter(d => d.id == selectedDishes[category])[0];
+        dishInfo = dishes.filter(d => d.keyword == dish)[0],
+        dishNowInfo = dishes.filter(d => d.id == selectedDishes[category])[0];
 
         if(dishNowInfo?.id === dishInfo.id) return;
 
